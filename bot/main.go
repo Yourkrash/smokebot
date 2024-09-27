@@ -1,8 +1,11 @@
 package main
 
 import (
-	"smokebot/bot/handlers"
 	"flag"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"smokebot/bot/handlers"
+	pb "smokebot/dbservice/proto"
 
 	// "fmt"
 	"log"
@@ -19,8 +22,21 @@ import (
 
 var debug = flag.Bool("debug", false, "log debug info")
 
+var (
+	addr = flag.String("addr", "localhost:50051", "the address to connect to")
+)
+
 func main() {
 	flag.Parse()
+
+	conn, err := grpc.NewClient(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+
+	defer conn.Close()
+	client := pb.NewMovieServiceClient(conn)
 
 	bot, err := tele.NewBot(tele.Settings{
 		Token:   os.Getenv("TOKEN_TG_BOT"),
@@ -37,8 +53,9 @@ func main() {
 	g.Use(m.WrapContext)
 
 	dp := dispatcher.NewDispatcher(g)
-
-	handlers.InitHandlers(m, dp)
+    
+	handle := handlers.New(m, dp, &client)
+	handle.InitHandlers()
 
 	bot.Start()
 }
