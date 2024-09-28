@@ -20,11 +20,11 @@ const (
 type HandleRunner struct {
 	m      *fsm.Manager
 	dp     *dispatcher.Dispatcher
-	client *pb.MovieServiceClient
+	client pb.RegServiceClient
 }
 
 func New(m *fsm.Manager,
-	dp *dispatcher.Dispatcher, client *pb.MovieServiceClient) *HandleRunner {
+	dp *dispatcher.Dispatcher, client pb.RegServiceClient) *HandleRunner {
 	return &HandleRunner{m, dp, client}
 }
 
@@ -34,6 +34,16 @@ func (run *HandleRunner) InitHandlers() {
 		tele.OnText,
 		fsm.DefaultState,
 		func(c tele.Context, state fsm.Context) error {
+			_, error := run.client.RegUser(context.TODO(), &pb.RegUserRequest{
+				User: &pb.User{
+					IdUser:    c.Sender().ID,
+					FirstName: c.Sender().FirstName,
+					LastName:  c.Sender().LastName,
+				}})
+			if error != nil {
+				log.Fatal("error db run")
+				return c.Send("Ошибка Подключения")
+			}
 			if err := state.SetState(context.TODO(), MainState); err != nil {
 				log.Fatal("error bot /start")
 			}

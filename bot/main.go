@@ -1,23 +1,21 @@
 package main
 
 import (
-	"flag"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"smokebot/bot/handlers"
 	pb "smokebot/dbservice/proto"
 
-	// "fmt"
-	"log"
-	"os"
-	"time"
-
 	"github.com/vitaliy-ukiru/fsm-telebot/v2"
 	"github.com/vitaliy-ukiru/fsm-telebot/v2/pkg/storage/memory"
 	"github.com/vitaliy-ukiru/telebot-filter/dispatcher"
 
-	// tf "github.com/vitaliy-ukiru/telebot-filter/telefilter"
 	tele "gopkg.in/telebot.v3"
+
+	"flag"
+	"log"
+	"os"
+	"time"
 )
 
 var debug = flag.Bool("debug", false, "log debug info")
@@ -36,7 +34,6 @@ func main() {
 	}
 
 	defer conn.Close()
-	client := pb.NewMovieServiceClient(conn)
 
 	bot, err := tele.NewBot(tele.Settings{
 		Token:   os.Getenv("TOKEN_TG_BOT"),
@@ -53,8 +50,8 @@ func main() {
 	g.Use(m.WrapContext)
 
 	dp := dispatcher.NewDispatcher(g)
-    
-	handle := handlers.New(m, dp, &client)
+
+	handle := handlers.New(m, dp, pb.NewRegServiceClient(conn))
 	handle.InitHandlers()
 
 	bot.Start()

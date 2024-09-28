@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.12.4
-// source: bottodb.proto
+// source: dbservice/proto/bottodb.proto
 
 package dbservice
 
@@ -19,141 +19,141 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MovieService_RegUser_FullMethodName   = "/proto.MovieService/RegUser"
-	MovieService_IsRegUser_FullMethodName = "/proto.MovieService/IsRegUser"
+	RegService_RegUser_FullMethodName   = "/proto.RegService/RegUser"
+	RegService_IsRegUser_FullMethodName = "/proto.RegService/IsRegUser"
 )
 
-// MovieServiceClient is the client API for MovieService service.
+// RegServiceClient is the client API for RegService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type MovieServiceClient interface {
+type RegServiceClient interface {
 	RegUser(ctx context.Context, in *RegUserRequest, opts ...grpc.CallOption) (*ErrorResponse, error)
 	IsRegUser(ctx context.Context, in *UserID, opts ...grpc.CallOption) (*BoolResponse, error)
 }
 
-type movieServiceClient struct {
+type regServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewMovieServiceClient(cc grpc.ClientConnInterface) MovieServiceClient {
-	return &movieServiceClient{cc}
+func NewRegServiceClient(cc grpc.ClientConnInterface) RegServiceClient {
+	return &regServiceClient{cc}
 }
 
-func (c *movieServiceClient) RegUser(ctx context.Context, in *RegUserRequest, opts ...grpc.CallOption) (*ErrorResponse, error) {
+func (c *regServiceClient) RegUser(ctx context.Context, in *RegUserRequest, opts ...grpc.CallOption) (*ErrorResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ErrorResponse)
-	err := c.cc.Invoke(ctx, MovieService_RegUser_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, RegService_RegUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *movieServiceClient) IsRegUser(ctx context.Context, in *UserID, opts ...grpc.CallOption) (*BoolResponse, error) {
+func (c *regServiceClient) IsRegUser(ctx context.Context, in *UserID, opts ...grpc.CallOption) (*BoolResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, MovieService_IsRegUser_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, RegService_IsRegUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// MovieServiceServer is the server API for MovieService service.
-// All implementations must embed UnimplementedMovieServiceServer
+// RegServiceServer is the server API for RegService service.
+// All implementations must embed UnimplementedRegServiceServer
 // for forward compatibility.
-type MovieServiceServer interface {
+type RegServiceServer interface {
 	RegUser(context.Context, *RegUserRequest) (*ErrorResponse, error)
 	IsRegUser(context.Context, *UserID) (*BoolResponse, error)
-	mustEmbedUnimplementedMovieServiceServer()
+	mustEmbedUnimplementedRegServiceServer()
 }
 
-// UnimplementedMovieServiceServer must be embedded to have
+// UnimplementedRegServiceServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedMovieServiceServer struct{}
+type UnimplementedRegServiceServer struct{}
 
-func (UnimplementedMovieServiceServer) RegUser(context.Context, *RegUserRequest) (*ErrorResponse, error) {
+func (UnimplementedRegServiceServer) RegUser(context.Context, *RegUserRequest) (*ErrorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegUser not implemented")
 }
-func (UnimplementedMovieServiceServer) IsRegUser(context.Context, *UserID) (*BoolResponse, error) {
+func (UnimplementedRegServiceServer) IsRegUser(context.Context, *UserID) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsRegUser not implemented")
 }
-func (UnimplementedMovieServiceServer) mustEmbedUnimplementedMovieServiceServer() {}
-func (UnimplementedMovieServiceServer) testEmbeddedByValue()                      {}
+func (UnimplementedRegServiceServer) mustEmbedUnimplementedRegServiceServer() {}
+func (UnimplementedRegServiceServer) testEmbeddedByValue()                    {}
 
-// UnsafeMovieServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to MovieServiceServer will
+// UnsafeRegServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to RegServiceServer will
 // result in compilation errors.
-type UnsafeMovieServiceServer interface {
-	mustEmbedUnimplementedMovieServiceServer()
+type UnsafeRegServiceServer interface {
+	mustEmbedUnimplementedRegServiceServer()
 }
 
-func RegisterMovieServiceServer(s grpc.ServiceRegistrar, srv MovieServiceServer) {
-	// If the following call pancis, it indicates UnimplementedMovieServiceServer was
+func RegisterRegServiceServer(s grpc.ServiceRegistrar, srv RegServiceServer) {
+	// If the following call pancis, it indicates UnimplementedRegServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&MovieService_ServiceDesc, srv)
+	s.RegisterService(&RegService_ServiceDesc, srv)
 }
 
-func _MovieService_RegUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RegService_RegUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RegUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MovieServiceServer).RegUser(ctx, in)
+		return srv.(RegServiceServer).RegUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MovieService_RegUser_FullMethodName,
+		FullMethod: RegService_RegUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MovieServiceServer).RegUser(ctx, req.(*RegUserRequest))
+		return srv.(RegServiceServer).RegUser(ctx, req.(*RegUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MovieService_IsRegUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RegService_IsRegUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MovieServiceServer).IsRegUser(ctx, in)
+		return srv.(RegServiceServer).IsRegUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MovieService_IsRegUser_FullMethodName,
+		FullMethod: RegService_IsRegUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MovieServiceServer).IsRegUser(ctx, req.(*UserID))
+		return srv.(RegServiceServer).IsRegUser(ctx, req.(*UserID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// MovieService_ServiceDesc is the grpc.ServiceDesc for MovieService service.
+// RegService_ServiceDesc is the grpc.ServiceDesc for RegService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var MovieService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.MovieService",
-	HandlerType: (*MovieServiceServer)(nil),
+var RegService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.RegService",
+	HandlerType: (*RegServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "RegUser",
-			Handler:    _MovieService_RegUser_Handler,
+			Handler:    _RegService_RegUser_Handler,
 		},
 		{
 			MethodName: "IsRegUser",
-			Handler:    _MovieService_IsRegUser_Handler,
+			Handler:    _RegService_IsRegUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "bottodb.proto",
+	Metadata: "dbservice/proto/bottodb.proto",
 }

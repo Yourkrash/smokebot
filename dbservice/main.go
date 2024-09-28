@@ -27,7 +27,7 @@ var err error
 type User struct {
 	ID             int64 `gorm:"primarykey"`
 	FirstName      string
-	SecondName     string
+	LastName       string
 	UserSubscriber []UserSubscriber `gorm:"foreignKey:ID"`
 }
 
@@ -63,15 +63,15 @@ var (
 )
 
 type server struct {
-	pb.UnimplementedMovieServiceServer
+	pb.UnimplementedRegServiceServer
 }
 
 func (*server) RegUser(ctx context.Context, req *pb.RegUserRequest) (*pb.ErrorResponse, error) {
 	user := req.GetUser()
 	DB.Create(&User{
-		ID:         user.GetIdUser(),
-		FirstName:  user.GetName(),
-		SecondName: user.GetName(),
+		ID:        user.GetIdUser(),
+		FirstName: user.GetFirstName(),
+		LastName:  user.GetLastName(),
 	})
 	return &pb.ErrorResponse{Error: ""}, nil
 }
@@ -91,7 +91,7 @@ func main() {
 
 	s := grpc.NewServer()
 
-	pb.RegisterMovieServiceServer(s, &server{})
+	pb.RegisterRegServiceServer(s, &server{})
 
 	log.Printf("Server listening at %v", lis.Addr())
 

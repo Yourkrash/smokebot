@@ -6,7 +6,8 @@ option go_package = "dbservice/dbservice";
  
 message User {
    int64 id_user = 1;
-   string name = 2;
+   string first_name = 2;
+   string last_name = 3;
 }
  
 message RegUserRequest {
@@ -25,7 +26,7 @@ message BoolResponse {
    bool isreg = 1;
 }
  
-service MovieService {
+service RegService {
    rpc RegUser(RegUserRequest) returns (ErrorResponse) {}
    rpc IsRegUser(UserID) returns (BoolResponse) {}
 }

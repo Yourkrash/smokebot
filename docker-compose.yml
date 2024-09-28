@@ -2,14 +2,20 @@ version: "3"
 
 services:
   bot:
-    build: bot/
+    build: 
+      context: .
+      dockerfile: ./bot/Dockerfile
     depends_on:
       - dbservice
     ports:
       - 443:443
+      - 80:80
+      - 5222:5222
 
   dbservice:
-    build: dbservice/
+    build: 
+      context: .
+      dockerfile: ./dbservice/Dockerfile
     depends_on:
       - db
 
@@ -19,7 +25,5 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pass1234
       POSTGRES_DB: postgres
-    ports:
-      - 5432:5432
 
 
